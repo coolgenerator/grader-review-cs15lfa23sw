@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 # Directory names
@@ -49,16 +50,28 @@ fi
 
 set -e
 
-if grep -q "Compilation failed" test-results.txt;
-then
-    echo -e "Compilation failed.\nTest Score = 0"
-    exit 0
-elif grep -q "OK" test-results.txt;
-then
-    echo "Test Score = 100"
-    exit 0
-else
-    echo -e "Compilation success, but test failed.\nTest Score = 50"
-    exit 0
+if grep -q "OK" test-results.txt;
+then 
+    echo -e "All tests passed \nTest Score = 100"
+    exit 0;
 fi
 
+if grep -q "Compilation failed" test-results.txt;
+then
+    echo -e "Compilation failed \n"
+fi
+
+test_score=0
+if grep -q "class ListExamples" ListExamples.java;
+then
+    (( test_score=test_score+10 ))
+elif grep -q "static List<String> filter(List<String> s, StringChecker sc)" ListExamples.java;
+then
+    (( test_score=test_score+10 ))
+elif grep -q "static List<String> merge(List<String> list1, List<String> list2)" ListExamples.java;
+then
+    (( test_score=test_score+10 ))
+fi
+
+
+echo "Test Score: $test_score";
